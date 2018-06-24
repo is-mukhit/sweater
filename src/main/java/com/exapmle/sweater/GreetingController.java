@@ -1,7 +1,7 @@
 package com.exapmle.sweater;
 
-import com.exapmle.sweater.repos.MessageRepo;
 import com.exapmle.sweater.domain.Message;
+import com.exapmle.sweater.repos.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +40,21 @@ public class GreetingController {
         messageRepo.save(message);
 
         Iterable<Message> messages = messageRepo.findAll();
+
+        model.put("messages", messages);
+
+        return "main";
+    }
+
+    @PostMapping("filter")
+    public String filter(@RequestParam String filter, Map<String, Object> model) {
+        Iterable<Message> messages;
+
+        if (filter != null && !filter.isEmpty()) {
+            messages = messageRepo.findByTag(filter);
+        } else {
+            messages = messageRepo.findAll();
+        }
 
         model.put("messages", messages);
 
